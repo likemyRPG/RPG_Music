@@ -18,12 +18,6 @@ module.exports = {
   EmbedColor: "RANDOM", //Color of most embeds | Dont edit unless you want a specific color instead of a random one each time
   Permissions: 2205281600, //Bot Inviting Permissions
   Website: process.env.Website || "", //Website where it is hosted at includes http or https || Use "0.0.0.0" if you using Heroku || Do not include /api/callback. Just the website url. I.e. "https://foo.bar"
-  
-  Presence: {
-    status: "online", // You can show online, idle, and dnd
-    name: `${client.botconfig.DefaultPrefix}help | ${client.guilds.cache.size} Guilds | ${Math.ceil(client.users.cache.size/1000)}k Members`, // The message shown
-    type: "PLAYING", // PLAYING, WATCHING, LISTENING, STREAMING
-  },
 
   //Lavalink
   Lavalink: {
