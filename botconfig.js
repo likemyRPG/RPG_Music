@@ -21,7 +21,7 @@ module.exports = {
   
   Presence: {
     status: "online", // You can show online, idle, and dnd
-    name: `${config.prefix}help | ${client.guilds.cache.size} Guilds | ${Math.ceil(client.users.cache.size/1000)}k Members`, // The message shown
+    name: `${Prefix}help | ${client.guilds.cache.size} Guilds | ${Math.ceil(client.users.cache.size/1000)}k Members`, // The message shown
     type: "PLAYING", // PLAYING, WATCHING, LISTENING, STREAMING
   },
 
