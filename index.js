@@ -3,7 +3,7 @@ const client = new DiscordMusicBot();
 
 client.build();
 client.on("ready",()=>{
-    client.user.setStatus('ONLINE');
+    client.user.setStatus('dnd');
       client.user.setActivity(`${client.botconfig.DefaultPrefix}help | ${client.guilds.cache.size} Guilds | ${Math.ceil(client.users.cache.size/1000)}k Members`, { type: "PLAYING"})
 })
 module.exports = client; //;-;
