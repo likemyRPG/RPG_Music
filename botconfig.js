@@ -21,7 +21,7 @@ module.exports = {
   
   Presence: {
     status: "online", // You can show online, idle, and dnd
-    name: `Music`, // The message shown
+    name: `>help | Music`, // The message shown
     type: "PLAYING", // PLAYING, WATCHING, LISTENING, STREAMING
   },
 
