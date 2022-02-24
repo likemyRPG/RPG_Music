@@ -1,3 +1,6 @@
+# IDE
+.idea/
+
 # Logs
 logs
 *.log
@@ -106,6 +109,5 @@ dist
 
 # Etc
 dev-config.js
-db.json
-yarn.lock
-package-lock.json
+a.js
+guild.json

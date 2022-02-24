@@ -1,43 +1,80 @@
-const express = require("express");
+const { static, Router } = require("express");
+const api = Router();
 const fs = require("fs");
-const { EventEmitter } = require("events");
 const { join } = require("path");
-const getConfig = require("../util/getConfig");
-const DiscordMusicBot = require("../lib/DiscordMusicBot");
 
-class Server extends EventEmitter {
-  /**
-   * Create server ;-;
-   * @param {DiscordMusicBot} client
-   */
-  constructor(client) {
-    super();
-    getConfig()
-      .then((conf) => {
-        this.config = conf;
-        this.listen();
-      })
-      .catch((err) => {
-        throw Error(err);
-      });
+const RoutesPath = join(__dirname, "Routes");
 
-    this.app = express();
+fs.readdir(RoutesPath, (err, files) => {
+  if (err) return console.log(err);
+  files.forEach((file) => {
+    api.use("/api/" + file.split(".")[0], require(RoutesPath + "/" + file));
+  });
+});
 
-    //Stuff
-    fs.readdir(join(__dirname, "routes"), (err, files) => {
-      if (err) return console.log(err);
-      files.forEach((file) => {
-        this.app.use(
-          "/api/" + file.split(".")[0],
-          require(join(__dirname, "routes") + "/" + file)
-        );
-      });
-    });
-  }
+api.use("/", static(join(__dirname, "..", "assets")));
 
-  listen() {
-    this.app.listen(this.config.port);
-  }
+//Handle Login and other stuff
+
+const session = require("express-session");
+const DiscordStrategy = require("passport-discord").Strategy;
+const passport = require("passport");
+
+let config;
+try {
+  //Config for testing
+  config = require("../dev-config");
+} catch {
+  //Config for production
+  config = require("../botconfig");
 }
 
-module.exports = Server;
+passport.use(
+  new DiscordStrategy(
+    {
+      clientID: config.ClientID,
+      clientSecret: config.ClientSecret,
+      callbackURL: config.Website + config.CallbackURL,
+      scope: "identify guilds",
+    },
+    function (accessToken, refreshToken, profile, done) {
+      //User logged in yay!
+      process.nextTick(function () {
+        return done(null, profile);
+      });
+    }
+  )
+);
+
+api.use(
+  session({
+    secret: config.CookieSecret,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+api.use(passport.initialize());
+api.use(passport.session());
+
+api.get(
+  config.CallbackURL,
+  passport.authenticate("discord", {
+    failureRedirect: "/",
+  }),
+  function (req, res) {
+    res.redirect("/dashboard");
+  }
+);
+
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function (obj, done) {
+  done(null, obj);
+});
+
+api.use("/", require("./routes"));
+
+module.exports = api;
